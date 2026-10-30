@@ -2,7 +2,7 @@
 <style>body{font:14px system-ui;margin:12px}iframe{width:1280px;height:720px;border:1px solid #bbb}pre{white-space:pre-wrap}</style>
 <button id="run">Run sample regressions</button><pre id="results">Ready</pre><iframe id="sample" title="Sample under test"></iframe>
 <script type="module">
-const frame=document.getElementById('sample'),output=document.getElementById('results');
+const frame=document.getElementById('sample'),output=document.getElementById('results'),base=new URL('../',location.href);
 const assert=(ok,message)=>{if(!ok)throw Error(message);};
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function check(box,value,win){assert(box,'Missing checkbox');box.checked=value;box.dispatchEvent(new win.Event('change',{bubbles:true}));}
@@ -10,11 +10,11 @@ document.getElementById('run').onclick=async event=>{
  event.target.disabled=true;const results=[];
  try{
   for(const [model,count]of [['renov',3],['warehouse',4],['modelfile',2],['model6282',1]]){
-   output.textContent='Testing '+model;frame.src='/fixed/viewer/?model='+model;
+   output.textContent='Testing '+model;frame.src=new URL('viewer/?model='+model,base).href;
    const start=performance.now();while(!frame.contentWindow.viewer){if(performance.now()-start>30000)throw Error(model+' load timeout');await pause(50);}
    const win=frame.contentWindow,doc=win.document,v=win.viewer,T=v.THREE;
    const root=v.scene.children.find(g=>g.isGroup&&g.children.length&&g.children[0].isGroup),plans=v.scene.children.find(g=>g.isGroup&&g.children.some(m=>m.material?.map));
-   const data=await(await fetch('/fixed/sample/'+model+'.images.json')).json();
+   const data=await(await fetch(new URL('sample/'+model+'.images.json',base))).json();
    assert(plans.children.length===count,model+' image count');
    const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o);});
    const originalCoordinates=meshes.map(m=>m.position.toArray());
