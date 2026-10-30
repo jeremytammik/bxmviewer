@@ -68,7 +68,11 @@ async function loadModel() {
   const gltf = await new GLTFLoader().loadAsync(`${ASSETS}${modelName}.glb`);
   modelRoot.add(gltf.scene);
   gltf.scene.traverse(o => {
-    if (o.isMesh) o.userData.material = o.material;
+    if (o.isMesh) {
+      // glTF defaults to fully metallic, which renders black without an environment map.
+      if (o.material.metalness !== undefined) { o.material.metalness = 0; o.material.roughness = 0.8; }
+      o.userData.material = o.material;
+    }
   });
   bounds = new THREE.Box3().setFromObject(modelRoot);
   buildTypeList();
