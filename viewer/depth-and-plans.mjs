@@ -102,9 +102,13 @@ export async function resolveCoplanarLayers(root, THREE, { maxTriangles = 500000
     report.warnings.push(`Coplanar analysis skipped above ${maxTriangles.toLocaleString()} triangles; camera depth precision is still improved.`);
     return report;
   }
-  const box = new THREE.Box3().setFromObject(root), epsilon = Math.max(box.getSize(new THREE.Vector3()).length() * 1e-7, 1e-7);
+  // Float32 positions far from the origin have absolute error proportional to their magnitude,
+  // so tolerances scale with both model size and coordinate distance from the origin.
+  const box = new THREE.Box3().setFromObject(root), size = box.getSize(new THREE.Vector3()).length();
+  const magnitude = Math.max(...box.min.toArray().map(Math.abs), ...box.max.toArray().map(Math.abs));
+  const scale = Math.max(size, magnitude), epsilon = Math.max(scale * 1e-6, 1e-7), center = box.getCenter(new THREE.Vector3());
   const groups = new Map(), graph = new Map(meshes.map(m => [m, new Set()]));
-  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), normal = new THREE.Vector3(), edge = new THREE.Vector3();
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), normal = new THREE.Vector3(), edge = new THREE.Vector3(), rel = new THREE.Vector3();
   let processed = 0;
   for (const mesh of meshes) {
     const geometry = mesh.geometry, position = geometry.attributes.position, index = geometry.index;
@@ -119,8 +123,11 @@ export async function resolveCoplanarLayers(root, THREE, { maxTriangles = 500000
       normal.normalize();
       const first = [normal.x, normal.y, normal.z].find(v => Math.abs(v) > 1e-6);
       if (first < 0) normal.negate();
-      const distance = normal.dot(a), n = normal.toArray();
-      const key = n.map(v => Math.round(v / 1e-5)).concat(Math.round(distance / epsilon)).join(',');
+      // Measured from the model centre: a small normal error multiplied by a large coordinate
+      // would otherwise shift the plane offset by far more than the grouping bin.
+      const distance = normal.dot(rel.subVectors(a, center)), n = normal.toArray();
+      // Bins absorb float32 noise so one plane is not split across groups; the triangle test decides real overlap.
+      const key = n.map(v => Math.round(v / 1e-3)).concat(Math.round(distance / (scale * 1e-6))).join(',');
       const drop = n.map(Math.abs).indexOf(Math.max(...n.map(Math.abs))), axes = [0, 1, 2].filter(x => x !== drop);
       const points = [a.toArray(), b.toArray(), c.toArray()];
       const u = points.map(p => p[axes[0]]), v = points.map(p => p[axes[1]]);
