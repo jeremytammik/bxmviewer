@@ -1,0 +1,59 @@
+<!doctype html><meta charset="utf-8"><title>BXM sample regression</title>
+<style>body{font:14px system-ui;margin:12px}iframe{width:1280px;height:720px;border:1px solid #bbb}pre{white-space:pre-wrap}</style>
+<button id="run">Run sample regressions</button><pre id="results">Ready</pre><iframe id="sample" title="Sample under test"></iframe>
+<script type="module">
+const frame=document.getElementById('sample'),output=document.getElementById('results');
+const assert=(ok,message)=>{if(!ok)throw Error(message);};
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+function check(box,value,win){assert(box,'Missing checkbox');box.checked=value;box.dispatchEvent(new win.Event('change',{bubbles:true}));}
+document.getElementById('run').onclick=async event=>{
+ event.target.disabled=true;const results=[];
+ try{
+  for(const [model,count]of [['renov',3],['warehouse',4],['modelfile',2],['model6282',1]]){
+   output.textContent='Testing '+model;frame.src='/fixed/viewer/?model='+model;
+   const start=performance.now();while(!frame.contentWindow.viewer){if(performance.now()-start>30000)throw Error(model+' load timeout');await pause(50);}
+   const win=frame.contentWindow,doc=win.document,v=win.viewer,T=v.THREE;
+   const root=v.scene.children.find(g=>g.isGroup&&g.children.length&&g.children[0].isGroup),plans=v.scene.children.find(g=>g.isGroup&&g.children.some(m=>m.material?.map));
+   const data=await(await fetch('/fixed/sample/'+model+'.images.json')).json();
+   assert(plans.children.length===count,model+' image count');
+   const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o);});
+   const originalCoordinates=meshes.map(m=>m.position.toArray());
+   function checkPlans(mode){for(const mesh of plans.children){const i=data.images.find(i=>i.scopeId===mesh.userData.scopeId),p=mesh.material.map.image,h=mode==='declared'?i.height:i.width*p.height/p.width;
+    assert(Math.abs(mesh.geometry.parameters.height-h)<1e-8,'Sizing mismatch');assert(mesh.matrix.elements.slice(12,15).every((x,j)=>Math.abs(x-i.origin[j])<1e-8),'Origin changed');
+    assert(!mesh.material.depthWrite&&mesh.material.depthTest,'Image depth policy');}}
+   checkPlans('aspect');doc.getElementById('imageSizing').value='declared';doc.getElementById('imageSizing').dispatchEvent(new win.Event('change'));checkPlans('declared');
+   doc.getElementById('imageSizing').value='aspect';doc.getElementById('imageSizing').dispatchEvent(new win.Event('change'));checkPlans('aspect');
+   doc.getElementById('fitPlans').click();v.camera.updateMatrixWorld(true);
+   for(const mesh of plans.children){mesh.updateMatrixWorld(true);const {width:w,height:h}=mesh.geometry.parameters;
+    for(const[x,y]of[[0,0],[w,0],[w,h],[0,h]]){const p=new T.Vector3(x,y,0).applyMatrix4(mesh.matrixWorld).project(v.camera);assert(Math.abs(p.x)<=1.001&&Math.abs(p.y)<=1.001,'Fit plans clipped an image');}}
+   const first=plans.children[0],image=data.images.find(i=>i.scopeId===first.userData.scopeId),scope=data.scopes.find(s=>s.id===image.scopeId);
+   const imageBox=[...doc.querySelectorAll('#images label')].find(l=>l.textContent.trim()===image.name).querySelector('input');
+   const scopeBox=[...doc.querySelectorAll('#scopes label')].find(l=>l.textContent.trim()===scope.name).querySelector('input');
+   check(imageBox,false,win);check(scopeBox,false,win);check(scopeBox,true,win);assert(!first.visible,'Scope toggle overrode image toggle');
+   check(imageBox,true,win);check(scopeBox,false,win);assert(!first.visible,'Image overrode hidden scope');check(scopeBox,true,win);assert(first.visible,'Scope did not restore enabled plan');
+   const scoped=meshes.find(m=>m.userData.ScopeID===image.scopeId);
+   if(scoped){const typeBox=[...doc.querySelectorAll('#types label')].find(l=>l.textContent.trim().startsWith(scoped.userData.ObjectType+' (')).querySelector('input');
+    check(scopeBox,false,win);check(typeBox,false,win);check(typeBox,true,win);assert(!scoped.visible,'Type toggle overrode hidden scope');check(scopeBox,true,win);assert(scoped.visible,'Combined filters did not restore object');}
+   check(imageBox,false,win);doc.getElementById('showAll').click();assert(!first.visible&&!imageBox.checked,'Show all changed individual image choice');check(imageBox,true,win);
+   const origin=first.matrix.elements.slice(12,15);doc.querySelector(`[aria-label="Bring ${image.name} to front"]`).click();
+   assert(first.renderOrder===Math.max(...plans.children.map(m=>m.renderOrder)),'Bring to front order');assert(first.matrix.elements.slice(12,15).every((x,i)=>x===origin[i]),'Layer order moved image');
+   v.setView('iso');v.camera.updateMatrixWorld(true);const canvas=doc.getElementById('view'),rect=canvas.getBoundingClientRect();let chosen;
+   outer:for(const y of[.5,.4,.6])for(const x of[.5,.4,.6]){const ray=new T.Raycaster();ray.setFromCamera({x:x*2-1,y:1-y*2},v.camera);const hits=ray.intersectObject(root,true).filter(h=>h.object.visible);if(hits.length){chosen=[x,y];break outer;}}
+   assert(chosen,'No picking test ray');const point={clientX:rect.left+rect.width*chosen[0],clientY:rect.top+rect.height*chosen[1],bubbles:true};
+   // Untrusted synthetic events have no active OS pointer to capture. Exercise the
+   // viewer pick handler while leaving OrbitControls gesture handling to manual tests.
+   const orbitEnabled=v.controls.enabled;v.controls.enabled=false;
+   try{canvas.dispatchEvent(new win.PointerEvent('pointerdown',point));canvas.dispatchEvent(new win.PointerEvent('pointerup',point));}finally{v.controls.enabled=orbitEnabled;}
+   const selected=meshes.filter(m=>m.material!==m.userData.material);assert(selected.length===1,'Native picking did not select one object');
+   const selectedMesh=selected[0];check(doc.getElementById('isolate'),true,win);assert(meshes.some(m=>m!==selectedMesh&&m.material.transparent&&!m.material.depthWrite),'Grey-out failed');
+   check(doc.getElementById('isolate'),false,win);doc.getElementById('hide').click();assert(!selectedMesh.visible,'Hide selected failed');doc.getElementById('showAll').click();assert(meshes.every(m=>m.visible),'Show all failed');
+   assert(meshes.every((m,i)=>m.position.toArray().every((x,j)=>x===originalCoordinates[i][j])),'Geometry position changed');
+   if(model==='model6282')assert(doc.getElementById('imageWarnings').textContent.includes('e94002a9'),'Missing JPG warning absent');
+   results.push({model,passed:true,meshes:meshes.length,images:count,checks:['sizing modes','origins','depth policy','fit all plan corners','scope and image masks','scope and type masks','bring to front','picking','grey-out','hide/show','unchanged positions']});
+   frame.src='about:blank';await pause(50);
+  }
+  output.textContent=JSON.stringify({passed:true,results},null,2);output.dataset.passed='true';
+ }catch(error){output.textContent=JSON.stringify({passed:false,results,error:error.stack},null,2);output.dataset.passed='false';}
+ finally{event.target.disabled=false;}
+};
+</script>
