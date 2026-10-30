@@ -1,0 +1,144 @@
+{
+  "scopes": [
+    {
+      "id": "6aede40a-2bb3-4e62-ac47-8ff2d69397b5",
+      "name": "14 Interior linings and finishes"
+    },
+    {
+      "id": "e4119174-bd76-4e2e-99b3-d897cdc78a57",
+      "name": "15 Joinery interior and fittings"
+    },
+    {
+      "id": "53944781-5095-4982-b764-f469df89a618",
+      "name": "16 Plumbing"
+    },
+    {
+      "id": "640965c9-35e0-43da-a742-b229a2b8495c",
+      "name": "17 Electrical"
+    },
+    {
+      "id": "4fef1092-02fb-4f64-a321-7d6eeb8f2545",
+      "name": "00 Onsite Overheads"
+    },
+    {
+      "id": "5c83bb66-cfba-4156-94e5-e379c583b81c",
+      "name": "A. Demolition and Enabling Works"
+    },
+    {
+      "id": "6d89bab7-7cf4-4fc6-a212-651e7ec29dab",
+      "name": "02 Site Preparation"
+    },
+    {
+      "id": "60e531e1-a8e3-4406-a92e-3b3049c5db1d",
+      "name": "03 Scaffold"
+    },
+    {
+      "id": "9137959b-0376-42c0-84de-86011a518fb6",
+      "name": "04 Drainage and Sewers"
+    },
+    {
+      "id": "fc72f0d7-851f-4bec-bf3f-b45d3d441416",
+      "name": "B. Substructure"
+    },
+    {
+      "id": "909c38e9-04df-4011-a5a4-3dff43433399",
+      "name": "05 Substructure"
+    },
+    {
+      "id": "dce88c8e-85fc-46b9-8306-d875405b63be",
+      "name": "08 Upper floors"
+    },
+    {
+      "id": "8e9bb254-cd91-4f00-8384-5d433d5b5c6a",
+      "name": "C. Structure and Exterior"
+    },
+    {
+      "id": "90ffa6a9-df11-41e0-bc69-542fc238887d",
+      "name": "06 Structural members"
+    },
+    {
+      "id": "fe1feb05-1fe6-44ad-88c7-83ebd7ac149a",
+      "name": "07 Exterior walls, cladding and joinery"
+    },
+    {
+      "id": "6b17739e-c8b6-4ba2-a10c-a7cf723f1de1",
+      "name": "09 Interior walls and doors"
+    },
+    {
+      "id": "b22477e1-4579-4505-8b6d-e9bf5c46bd14",
+      "name": "10 Roof Structure"
+    },
+    {
+      "id": "31a50b4c-0ff3-457d-8d70-b6549b099d09",
+      "name": "11 Ceiling structures"
+    },
+    {
+      "id": "a00a1dee-532a-49f9-86d4-4d2e633771aa",
+      "name": "D. Roofing and Rainwater"
+    },
+    {
+      "id": "abedcb4c-5f48-4954-9820-25476fc913e1",
+      "name": "12 Roof Cladding and Rainwater"
+    },
+    {
+      "id": "1037078d-0638-4f5a-a730-69103af81f6a",
+      "name": "E. Interior Fitout"
+    },
+    {
+      "id": "590ae01c-de29-4836-9d27-5727ad81b595",
+      "name": "F. Plumbing and Electrical"
+    },
+    {
+      "id": "40a07508-346c-4b4e-aace-4122d5ddb2e7",
+      "name": "G. External Works"
+    },
+    {
+      "id": "2cea0eaf-658b-470e-a9b1-6bbe9a496c4f",
+      "name": "18 Heating and ventilation"
+    },
+    {
+      "id": "963bde10-6462-4e08-b2f0-c2daa1a1e8d2",
+      "name": "19 External works"
+    },
+    {
+      "id": "f8eacf2d-000a-4d53-ae7f-585afd7f9df5",
+      "name": "Z. Preliminaries and General Costs"
+    }
+  ],
+  "images": [
+    {
+      "file": "cefab396-7e98-4945-90c3-6e1814437f5a.jpg",
+      "name": "0N0 Floor plan",
+      "scopeId": "90ffa6a9-df11-41e0-bc69-542fc238887d",
+      "origin": [
+        0,
+        0,
+        -0
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 30.740140701928002,
+      "height": 30.740140701928002
+    },
+    {
+      "file": "ba8ee76c-3162-45a1-a6c2-a16577acb946.jpg",
+      "name": "0N1 Site plan",
+      "scopeId": "963bde10-6462-4e08-b2f0-c2daa1a1e8d2",
+      "origin": [
+        -5.71215576171875,
+        0,
+        3.467038818359375
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 53.968359402470995,
+      "height": 53.968359402470995
+    }
+  ]
+}

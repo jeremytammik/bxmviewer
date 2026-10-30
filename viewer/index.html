@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BXM viewer</title>
+<style>
+  html, body { margin: 0; height: 100%; font: 13px system-ui, sans-serif; background: #ecebe5; overflow: hidden; }
+  #view { position: absolute; inset: 0; }
+  .panel { position: absolute; top: 10px; left: 10px; width: 280px; max-height: calc(100% - 20px); overflow: auto;
+           background: #fffe; border-radius: 8px; box-shadow: 0 1px 6px #0004; padding: 10px; }
+  .panel > details { margin: 0 0 6px; }
+  .panel > details > summary { font-size: 12px; text-transform: uppercase; color: #666; cursor: pointer; margin-bottom: 4px; font-weight: 600; }
+  #menu { position: absolute; display: none; background: #fff; border: 1px solid #bbb; border-radius: 6px; box-shadow: 0 2px 8px #0005; padding: 3px 0; z-index: 10; }
+  #menu div { padding: 5px 14px; cursor: pointer; white-space: nowrap; }
+  #menu div:hover { background: #eef; }
+  #menu .title { color: #777; cursor: default; font-weight: 600; }
+  #menu .title:hover { background: none; }
+  button { margin: 2px 2px 2px 0; padding: 4px 8px; border: 1px solid #bbb; border-radius: 4px; background: #fff; cursor: pointer; }
+  button:hover { background: #eef; }
+  label { display: block; margin: 3px 0; }
+  input[type=range] { width: 100%; }
+  #info { color: #444; min-height: 3em; word-break: break-word; }
+  #info table { border-collapse: collapse; margin-top: 4px; width: 100%; }
+  #info td { border-top: 1px solid #ddd; padding: 2px 4px 2px 0; vertical-align: top; }
+  #info td:first-child { color: #777; white-space: nowrap; }
+  #status { position: absolute; bottom: 8px; left: 10px; color: #555; }
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div class="panel">
+  <details open><summary>Model</summary>
+  <select id="model"></select>
+  </details>
+  <details open><summary>Views</summary>
+  <button data-view="plan">Plan</button>
+  <button data-view="iso">Isometric</button>
+  <button data-view="front">Front</button>
+  <button data-view="side">Side</button>
+  </details>
+  <details open><summary>Plan images</summary>
+  <div id="images">none</div>
+  <label>Opacity <input id="opacity" type="range" min="0" max="1" step="0.05" value="0.85"></label>
+  </details>
+  <details><summary>Scopes</summary>
+  <div id="scopes">none</div>
+  </details>
+  <details><summary>Element types</summary>
+  <div id="types"></div>
+  </details>
+  <details open><summary>Elements</summary>
+  <button id="hide">Hide selected</button>
+  <button id="showAll">Show all</button>
+  <label><input id="isolate" type="checkbox"> Grey out unselected</label>
+  </details>
+  <details open><summary>Properties</summary>
+  <div id="info">Click an element to select it.</div>
+  </details>
+</div>
+<div id="menu"></div>
+<div id="status"></div>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/examples/" } }
+</script>
+<script type="module" src="./viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+{
+  "scopes": [
+    {
+      "id": "f0cd4e48-1d07-4828-86cc-2308ee18551e",
+      "name": "B. Substructure"
+    },
+    {
+      "id": "15eca6f3-4507-4161-9018-8fbfde6d70a1",
+      "name": "C. Structure and Exterior"
+    },
+    {
+      "id": "7b9a8eba-d99d-442d-89e5-4fb4edaef100",
+      "name": "D. Roofing and Rainwater"
+    },
+    {
+      "id": "a5bc89e3-fc27-4399-85d9-5b612890764d",
+      "name": "E. Interior Fitout"
+    },
+    {
+      "id": "f7d69564-9e75-4e16-ba17-f4f1a8605249",
+      "name": "F. Plumbing and Electrical"
+    },
+    {
+      "id": "29ff8e94-9c40-49e1-9742-655ddc839a82",
+      "name": "G. External Works"
+    },
+    {
+      "id": "12a522b3-6973-4b5c-be06-6ba1e46119a1",
+      "name": "Z. Preliminaries and General Costs"
+    },
+    {
+      "id": "2132b8cd-f8e7-4040-a8b8-dec6c1793d6d",
+      "name": "05 Substructure"
+    },
+    {
+      "id": "6a029a16-045b-483f-865f-d0c12040dee9",
+      "name": "08 Upper floors"
+    },
+    {
+      "id": "ed90ce1b-6e5b-42e0-888a-46afa9343d11",
+      "name": "06 Structural members"
+    },
+    {
+      "id": "49228e49-1dcc-4deb-80bf-409bb7c88296",
+      "name": "07 Exterior walls, cladding and joinery"
+    },
+    {
+      "id": "570b6dae-b4ee-47a1-8565-e9a58db4b3fc",
+      "name": "09 Interior walls and doors"
+    },
+    {
+      "id": "5910f583-5977-44bb-aafd-4668272ac17e",
+      "name": "10 Roof Structure"
+    },
+    {
+      "id": "a471d46e-fb43-4e1e-86ee-ae98db721089",
+      "name": "11 Ceiling structures"
+    },
+    {
+      "id": "7dddac36-e640-4e86-840f-b8d7b9cc79bc",
+      "name": "12 Roof Cladding and Rainwater"
+    },
+    {
+      "id": "b3bd7abc-4914-4f02-95d6-6641866e8d69",
+      "name": "13 Stairs and balustrades"
+    },
+    {
+      "id": "7bd30c55-e05c-4e8e-a569-d9dc091534e9",
+      "name": "14 Interior linings and finishes"
+    },
+    {
+      "id": "2eb9be5c-e2ce-4417-ae01-9942fccc7e52",
+      "name": "15 Joinery interior and fittings"
+    },
+    {
+      "id": "9798955b-ff65-44e5-8e87-2ee324ed86a3",
+      "name": "16 Plumbing"
+    },
+    {
+      "id": "a1502be1-21df-48c7-868d-4d9ef278ef6e",
+      "name": "17 Electrical"
+    },
+    {
+      "id": "c4c42ec2-a3d1-492e-bc35-ae719005bf08",
+      "name": "18 Heating and ventilation"
+    },
+    {
+      "id": "8d4b4c00-b9ea-4e7c-8560-bc2b954c0989",
+      "name": "19 External works"
+    },
+    {
+      "id": "ce68776d-b54d-493a-bec5-dcc0818db2bc",
+      "name": "00 Onsite Overheads"
+    },
+    {
+      "id": "542d9064-ee62-4753-96ce-c4034c3a1737",
+      "name": "07 Exterior walls, cladding and joinery"
+    },
+    {
+      "id": "51e4a082-e2ce-4df7-b799-0f1b0625ef2a",
+      "name": "09 Interior walls and doors"
+    },
+    {
+      "id": "73396101-7b9f-46df-9aad-dd72e7e12397",
+      "name": "11 Ceiling structures"
+    },
+    {
+      "id": "12c97993-ed4e-4b32-b1d3-de878e6003df",
+      "name": "14 Interior linings and finishes"
+    },
+    {
+      "id": "46eccabb-d7a1-478e-a2a1-a5041802c0a0",
+      "name": "15 Joinery interior and fittings"
+    },
+    {
+      "id": "36641d18-8023-48ef-a463-7c99ff130e61",
+      "name": "16 Plumbing"
+    },
+    {
+      "id": "c22138b4-5b8c-4b40-afff-3bddc9b7b81e",
+      "name": "17 Electrical"
+    },
+    {
+      "id": "0e8baa64-9b3c-432a-9dad-4030b73d3bda",
+      "name": "Plumbing Fixtures"
+    }
+  ],
+  "images": [
+    {
+      "file": "86fb0ede-b31c-458e-a9ed-31e86c5029ea.jpg",
+      "name": "0N0 Mockup Floor Plan",
+      "scopeId": "a471d46e-fb43-4e1e-86ee-ae98db721089",
+      "origin": [
+        0,
+        0,
+        -0
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 11.82378870272924,
+      "height": 11.82378870272924
+    },
+    {
+      "file": "e94002a9-32fe-4f81-9690-c01b467dfb22.jpg",
+      "name": "1N0 Mockup Floor Plan",
+      "scopeId": "5910f583-5977-44bb-aafd-4668272ac17e",
+      "origin": [
+        -0.02149496269226074,
+        2.7,
+        0.3603074035644531
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 11.799133341609952,
+      "height": 11.799133341609952
+    }
+  ]
+}

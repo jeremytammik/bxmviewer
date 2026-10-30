@@ -1,0 +1,222 @@
+{
+  "scopes": [
+    {
+      "id": "cfd53011-f8b2-4783-b5f0-11deb8d8f408",
+      "name": "B. Substructure"
+    },
+    {
+      "id": "1c3b523c-dc24-4c9e-a7ef-943aafb5770e",
+      "name": "05 Substructure"
+    },
+    {
+      "id": "664caa58-af26-460a-8ac2-460608cfecf2",
+      "name": "C. Structure and Exterior"
+    },
+    {
+      "id": "650bf281-7eb5-42e5-9a5d-3309d2c86553",
+      "name": "07 Exterior walls, cladding and joinery"
+    },
+    {
+      "id": "35d07612-09e7-4f55-9e0f-9bc436003e2b",
+      "name": "D. Roofing and Rainwater"
+    },
+    {
+      "id": "aede11c0-2291-4d04-a409-22a747d5306f",
+      "name": "12 Roof Cladding and Rainwater"
+    },
+    {
+      "id": "36815209-b209-4ce2-a838-fa4b963d9235",
+      "name": "09 Interior walls and doors"
+    },
+    {
+      "id": "12e561ed-f87c-4e43-87bf-45cfda1e5ce5",
+      "name": "08 Upper floors"
+    },
+    {
+      "id": "6cd56ebe-2f88-4be9-bcf9-8d64969014e0",
+      "name": "09 Interior walls and doors"
+    },
+    {
+      "id": "4eb30312-7b27-45eb-8ae3-5502354bd76e",
+      "name": "E. Interior Fitout"
+    },
+    {
+      "id": "ba7f0cba-167c-40ee-a529-d6f96f69c379",
+      "name": "14 Interior linings and finishes"
+    },
+    {
+      "id": "e34de034-c40d-47c3-adf3-c0daa1109575",
+      "name": "11 Ceiling structures"
+    },
+    {
+      "id": "40789bea-15d7-41e5-aef0-32ed2a0b5739",
+      "name": "11 Ceiling structures"
+    },
+    {
+      "id": "3952594a-2e98-4fef-ba7c-d775bacee8b6",
+      "name": "14 Interior linings and finishes"
+    },
+    {
+      "id": "c928bc9d-27bc-4bc5-a548-b3f5ae3b13f2",
+      "name": "15 Joinery interior and fittings"
+    },
+    {
+      "id": "0c3a4ec6-1a80-4324-b011-062f6c1928e9",
+      "name": "15 Joinery interior and fittings"
+    },
+    {
+      "id": "752d3c40-9ce1-42b2-834f-4e35c8207d20",
+      "name": "13 Stairs and balustrades"
+    },
+    {
+      "id": "f7dea6c7-75d5-4ab3-bd51-c39346b0e6ee",
+      "name": "06 Structural members"
+    },
+    {
+      "id": "2a4b4d9f-553e-46a4-b20d-ed5823752974",
+      "name": "F. Plumbing and Electrical"
+    },
+    {
+      "id": "eddfe101-dcb9-48df-8b5a-fd6351f75a87",
+      "name": "16 Plumbing"
+    },
+    {
+      "id": "e123c7e1-2648-4612-a0b1-5732b7fdd814",
+      "name": "16 Plumbing"
+    },
+    {
+      "id": "0b12edca-aec6-445a-a294-646a91e85330",
+      "name": "17 Electrical"
+    },
+    {
+      "id": "cfdb6143-2b59-4517-99e1-b282381673f0",
+      "name": "17 Electrical"
+    },
+    {
+      "id": "6022697f-e3bb-43a9-b022-4f6959311858",
+      "name": "G. External Works"
+    },
+    {
+      "id": "43c50ef4-4611-4e12-863b-5c744ad5ee95",
+      "name": "19 External works"
+    },
+    {
+      "id": "8289ed71-4776-4caf-98cb-16c17581f759",
+      "name": "A. Demolition and Enabling Works"
+    },
+    {
+      "id": "11e1f210-8b64-426b-9f87-9d7b08265d57",
+      "name": "02 Site Preparation"
+    },
+    {
+      "id": "74054ab8-7932-4c31-b851-891405066434",
+      "name": "03 Scaffold"
+    },
+    {
+      "id": "3f1fd9d4-672d-40d3-beec-b846ff101f9d",
+      "name": "04 Drainage and Sewers"
+    },
+    {
+      "id": "9f2ef9dc-a095-4c6f-99fe-e2cd4f0dabba",
+      "name": "Z. Preliminaries and General Costs"
+    },
+    {
+      "id": "a322f405-e081-4ee0-be51-bdcade7eff45",
+      "name": "00 Onsite Overheads"
+    },
+    {
+      "id": "192f701d-0472-44d0-8004-d878fd2cfa21",
+      "name": "10 Roof Structure"
+    },
+    {
+      "id": "a150dadd-0201-46f6-ab5d-7eb9e5f86248",
+      "name": "18 Heating and ventilation"
+    },
+    {
+      "id": "86d4684d-ac7f-4acf-8c59-da2863e286ed",
+      "name": "H. Hanger Services"
+    },
+    {
+      "id": "edf855f6-e034-496c-9b4b-bf4ead4eefff",
+      "name": "Electrical"
+    },
+    {
+      "id": "d651dbdc-5ef5-4e97-9065-e5c856631359",
+      "name": "HEVAC"
+    },
+    {
+      "id": "6521e393-dc61-4f02-a927-00176a6b29b2",
+      "name": "Crane"
+    }
+  ],
+  "images": [
+    {
+      "file": "9636a610-5cfa-4bd4-87c8-11e1a4dd26ab.jpg",
+      "name": "0N1 Roof Plan",
+      "scopeId": "aede11c0-2291-4d04-a409-22a747d5306f",
+      "origin": [
+        1.059572998046875,
+        0,
+        -4.3985048828125
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 96.19910126759119,
+      "height": 96.19910126759119
+    },
+    {
+      "file": "62674857-6985-49aa-949c-686adf62d7c2.jpg",
+      "name": "0N0 Updated GF Plan",
+      "scopeId": "36815209-b209-4ce2-a838-fa4b963d9235",
+      "origin": [
+        -1.4218345947265625,
+        0,
+        -2.83914892578125
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 98.88592829654989,
+      "height": 98.88592829654989
+    },
+    {
+      "file": "d7a01d0e-76c5-42c0-9bfa-a0ae773994b1.jpg",
+      "name": "1N0 Mezzanine Floor Plan Updated",
+      "scopeId": "12e561ed-f87c-4e43-87bf-45cfda1e5ce5",
+      "origin": [
+        -1.67461865234375,
+        3.36,
+        -7.0865893554687505
+      ],
+      "xAxis": [
+        1,
+        0,
+        -0
+      ],
+      "width": 98.03434051586312,
+      "height": 98.03434051586312
+    },
+    {
+      "file": "f6197ecc-4ded-4e3c-8762-3e3112f56f6f.jpg",
+      "name": "0N2 Updated Site Plan",
+      "scopeId": "43c50ef4-4611-4e12-863b-5c744ad5ee95",
+      "origin": [
+        23.095265625,
+        0,
+        125.0737578125
+      ],
+      "xAxis": [
+        0.699151873588562,
+        0,
+        -0.7149731516838074
+      ],
+      "width": 219.3081923815427,
+      "height": 219.3081923815427
+    }
+  ]
+}
