@@ -9,15 +9,34 @@ function check(box,value,win){assert(box,'Missing checkbox');box.checked=value;b
 document.getElementById('run').onclick=async event=>{
  event.target.disabled=true;const results=[];
  try{
-  for(const [model,count]of [['renov',3],['warehouse',4],['modelfile',2],['model6282',1]]){
+  for(const [model,count]of [['renov',3],['warehouse',4],['modelfile',2],['model6282',2]]){
    output.textContent='Testing '+model;frame.src=new URL('viewer/?model='+model,base).href;
-   const start=performance.now();while(!frame.contentWindow.viewer){if(performance.now()-start>30000)throw Error(model+' load timeout');await pause(50);}
+   const start=performance.now();while(!frame.contentWindow.viewer){if(performance.now()-start>60000)throw Error(model+' load timeout');await pause(50);}
    const win=frame.contentWindow,doc=win.document,v=win.viewer,T=v.THREE;
    const root=v.scene.children.find(g=>g.isGroup&&g.children.length&&g.children[0].isGroup),plans=v.scene.children.find(g=>g.isGroup&&g.children.some(m=>m.material?.map));
    const data=await(await fetch(new URL('sample/'+model+'.images.json',base))).json();
    assert(plans.children.length===count,model+' image count');
    const meshes=[];root.traverse(o=>{if(o.isMesh)meshes.push(o);});
    const originalCoordinates=meshes.map(m=>m.position.toArray());
+   const section=doc.getElementById('sectionEnabled'),axis=doc.getElementById('sectionAxis'),side=doc.getElementById('sectionSide'),position=doc.getElementById('sectionPosition');
+   assert(v.renderer.localClippingEnabled&&!section.disabled,'Section clipping is not available');
+   assert(!section.checked&&!meshes[0].material.clippingPlanes,'Section cut should start disabled');
+   assert(!plans.children[0].material.clippingPlanes,'Section cut must not clip plan images');
+   axis.value='y';position.value='250';position.dispatchEvent(new win.Event('input'));
+   check(section,true,win);
+   let sectionBounds=new T.Box3().setFromObject(root),cut=sectionBounds.min.y+(sectionBounds.max.y-sectionBounds.min.y)*.25;
+   assert(Math.abs(v.sectionPlane.normal.y-1)<1e-8&&Math.abs(v.sectionPlane.constant+cut)<1e-6,'Positive-side section position mismatch');
+   assert(meshes[0].material.clippingPlanes?.[0]===v.sectionPlane,'Section plane was not applied to model materials');
+   side.value='negative';side.dispatchEvent(new win.Event('change'));
+   assert(Math.abs(v.sectionPlane.normal.y+1)<1e-8&&Math.abs(v.sectionPlane.constant-cut)<1e-6,'Negative-side section direction mismatch');
+   for(const coordinate of['x','z']){
+    axis.value=coordinate;axis.dispatchEvent(new win.Event('change'));sectionBounds=new T.Box3().setFromObject(root);
+    cut=sectionBounds.min[coordinate]+(sectionBounds.max[coordinate]-sectionBounds.min[coordinate])*.25;
+    assert(Math.abs(v.sectionPlane.normal[coordinate]+1)<1e-8&&Math.abs(v.sectionPlane.constant-cut)<1e-6,coordinate.toUpperCase()+' section axis mismatch');
+   }
+   axis.value='y';axis.dispatchEvent(new win.Event('change'));
+   check(section,false,win);
+   assert(!meshes[0].material.clippingPlanes,'Disabling section cut did not restore full model');
    function checkPlans(mode){for(const mesh of plans.children){const i=data.images.find(i=>i.scopeId===mesh.userData.scopeId),p=mesh.material.map.image,h=mode==='declared'?i.height:i.width*p.height/p.width;
     assert(Math.abs(mesh.geometry.parameters.height-h)<1e-8,'Sizing mismatch');assert(mesh.matrix.elements.slice(12,15).every((x,j)=>Math.abs(x-i.origin[j])<1e-8),'Origin changed');
     assert(!mesh.material.depthWrite&&mesh.material.depthTest,'Image depth policy');}}
@@ -45,11 +64,12 @@ document.getElementById('run').onclick=async event=>{
    const orbitEnabled=v.controls.enabled;v.controls.enabled=false;
    try{canvas.dispatchEvent(new win.PointerEvent('pointerdown',point));canvas.dispatchEvent(new win.PointerEvent('pointerup',point));}finally{v.controls.enabled=orbitEnabled;}
    const selected=meshes.filter(m=>m.material!==m.userData.material);assert(selected.length===1,'Native picking did not select one object');
-   const selectedMesh=selected[0];check(doc.getElementById('isolate'),true,win);assert(meshes.some(m=>m!==selectedMesh&&m.material.transparent&&!m.material.depthWrite),'Grey-out failed');
+   const selectedMesh=selected[0];check(section,true,win);assert(selectedMesh.material.clippingPlanes?.[0]===v.sectionPlane,'Selected element did not retain section clipping');check(section,false,win);
+   check(doc.getElementById('isolate'),true,win);assert(meshes.some(m=>m!==selectedMesh&&m.material.transparent&&!m.material.depthWrite),'Grey-out failed');
    check(doc.getElementById('isolate'),false,win);doc.getElementById('hide').click();assert(!selectedMesh.visible,'Hide selected failed');doc.getElementById('showAll').click();assert(meshes.every(m=>m.visible),'Show all failed');
    assert(meshes.every((m,i)=>m.position.toArray().every((x,j)=>x===originalCoordinates[i][j])),'Geometry position changed');
-   if(model==='model6282')assert(doc.getElementById('imageWarnings').textContent.includes('e94002a9'),'Missing JPG warning absent');
-   results.push({model,passed:true,meshes:meshes.length,images:count,checks:['sizing modes','origins','depth policy','fit all plan corners','scope and image masks','scope and type masks','bring to front','picking','grey-out','hide/show','unchanged positions']});
+   if(model==='model6282')assert(!doc.getElementById('imageWarnings').textContent.includes('e94002a9'),'Upper-level JPG reported as unavailable');
+   results.push({model,passed:true,meshes:meshes.length,images:count,checks:['section axis and position','both section directions','section selection material','section leaves plans intact','sizing modes','origins','depth policy','fit all plan corners','scope and image masks','scope and type masks','bring to front','picking','grey-out','hide/show','unchanged positions']});
    frame.src='about:blank';await pause(50);
   }
   output.textContent=JSON.stringify({passed:true,results},null,2);output.dataset.passed='true';

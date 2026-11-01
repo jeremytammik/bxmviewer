@@ -13,6 +13,7 @@ const stretchImages = params.has('stretch');
 
 const canvas = document.getElementById('view');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
+renderer.localClippingEnabled = true;
 renderer.setPixelRatio(devicePixelRatio);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xecebe5);
@@ -41,6 +42,14 @@ const planGroup = new THREE.Group();
 scene.add(modelRoot, planGroup);
 
 const greyMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb, transparent: true, opacity: 0.15, depthWrite: false, side: THREE.DoubleSide });
+const sectionPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const sectionPlanes = [sectionPlane];
+const sectionEnabled = document.getElementById('sectionEnabled');
+const sectionAxis = document.getElementById('sectionAxis');
+const sectionSide = document.getElementById('sectionSide');
+const sectionPosition = document.getElementById('sectionPosition');
+const sectionLabel = document.getElementById('sectionLabel');
+let sectionRange = null;
 const highlightColour = new THREE.Color(0xffc400);
 let selected = null;
 let bounds = new THREE.Box3();
@@ -70,6 +79,46 @@ function updateVisibility() {
   document.getElementById('fitPlans').disabled = !planImages.some(i => i.mesh?.visible);
   updateDepthRange();
 }
+
+function applySectionClipping(material) {
+  for (const part of Array.isArray(material) ? material : [material]) {
+    const clippingPlanes = sectionEnabled.checked ? sectionPlanes : null;
+    if (part.clippingPlanes !== clippingPlanes) {
+      part.clippingPlanes = clippingPlanes;
+      part.needsUpdate = true;
+    }
+  }
+}
+
+function updateSectionPlane() {
+  if (!sectionRange) return;
+  const axis = sectionAxis.value;
+  const fraction = Number(sectionPosition.value) / Number(sectionPosition.max);
+  const position = sectionRange.min + (sectionRange.max - sectionRange.min) * fraction;
+  const direction = sectionSide.value === 'positive' ? 1 : -1;
+  sectionPlane.normal.set(0, 0, 0);
+  sectionPlane.normal[axis] = direction;
+  sectionPlane.constant = -position * direction;
+  sectionLabel.textContent = `Keep ${axis.toUpperCase()} ${direction > 0 ? '≥' : '≤'} ${position.toFixed(2)} m`;
+}
+
+sectionEnabled.onchange = () => {
+  modelRoot.traverse(o => {
+    if (!o.isMesh) return;
+    applySectionClipping(o.material);
+    applySectionClipping(o.userData.material);
+  });
+  applySectionClipping(highlightMaterial);
+  applySectionClipping(greyMaterial);
+  if (outline) applySectionClipping(outline.material);
+  updateSectionPlane();
+};
+sectionAxis.onchange = () => {
+  if (sectionRange) sectionRange = { min: bounds.min[sectionAxis.value], max: bounds.max[sectionAxis.value] };
+  updateSectionPlane();
+};
+sectionSide.onchange = updateSectionPlane;
+sectionPosition.oninput = updateSectionPlane;
 
 const select = document.getElementById('model');
 for (const name of MODELS) select.add(new Option(name, name, false, name === modelName));
@@ -106,8 +155,15 @@ async function loadModel() {
   setDepthBias(highlightMaterial, depthReport.maxLayer + 2);
   document.getElementById('depthWarnings').textContent = depthReport.warnings.join('\n');
   // Record the prepared materials so selection restores their depth policies.
-  gltf.scene.traverse(o => { if (o.isMesh) o.userData.material = o.material; });
+  gltf.scene.traverse(o => {
+    if (!o.isMesh) return;
+    o.userData.material = o.material;
+    applySectionClipping(o.material);
+  });
   bounds = new THREE.Box3().setFromObject(modelRoot);
+  sectionRange = { min: bounds.min[sectionAxis.value], max: bounds.max[sectionAxis.value] };
+  for (const control of [sectionEnabled, sectionAxis, sectionSide, sectionPosition]) control.disabled = false;
+  updateSectionPlane();
   buildTypeList();
   setView('iso');
   setStatus(`${modelName}: ${countMeshes()} elements`);
@@ -275,7 +331,8 @@ function pick(event) {
   const pointer = new THREE.Vector2(((event.clientX - rect.left) / rect.width) * 2 - 1, -((event.clientY - rect.top) / rect.height) * 2 + 1);
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(pointer, camera);
-  const hits = raycaster.intersectObject(modelRoot, true).filter(h => isPickable(h.object));
+  const hits = raycaster.intersectObject(modelRoot, true).filter(h => isPickable(h.object)
+    && (!sectionEnabled.checked || sectionPlane.distanceToPoint(h.point) >= -1e-7));
   // Zones are large transparent volumes; prefer the solid element in front of or inside them.
   const solid = hits.find(h => !h.object.material.transparent && h.object.userData.ObjectType !== 'Zone');
   const first = solid ?? hits[0];
@@ -306,6 +363,7 @@ function setSelected(mesh) {
   outline = null;
   if (mesh) {
     outline = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 20), new THREE.LineBasicMaterial({ color: 0xff0000, depthTest: false, depthWrite: false, transparent: true }));
+    applySectionClipping(outline.material);
     outline.renderOrder = 2000 + planImages.length;
     outline.raycast = () => {};
     mesh.add(outline);
@@ -314,6 +372,7 @@ function setSelected(mesh) {
   modelRoot.traverse(o => {
     if (!o.isMesh) return;
     o.material = o === selected ? highlightMaterial : !selected || !isolate ? o.userData.material : greyMaterial;
+    applySectionClipping(o.material);
   });
   showProperties(mesh);
 }
@@ -430,7 +489,7 @@ renderer.setAnimationLoop(() => {
 
 await loadModel();
 await loadPlanImages();
-window.viewer = { setView, scene, controls, THREE, get camera() { return camera; } };
+window.viewer = { setView, scene, controls, THREE, sectionPlane, renderer, get camera() { return camera; } };
 
 // Release the extra owned materials and image resources when the page is closed.
 addEventListener('pagehide', event => {
