@@ -80,6 +80,15 @@ function updateVisibility() {
   updateDepthRange();
 }
 
+function updateSelectionButtons() {
+  for (const [id, selector] of [['selectAllScopes', '#scopes input'], ['selectAllTypes', '#types input']]) {
+    const boxes = [...document.querySelectorAll(selector)];
+    const button = document.getElementById(id);
+    button.disabled = boxes.length === 0;
+    button.textContent = boxes.length && boxes.every(box => box.checked) ? 'Unselect all' : 'Select all';
+  }
+}
+
 function applySectionClipping(material) {
   for (const part of Array.isArray(material) ? material : [material]) {
     const clippingPlanes = sectionEnabled.checked ? sectionPlanes : null;
@@ -281,16 +290,29 @@ function buildScopeList(scopes) {
     if (!byName.has(scope.name)) byName.set(scope.name, []);
     byName.get(scope.name).push(scope.id);
   }
-  if (!byName.size) return;
+  if (!byName.size) { updateSelectionButtons(); return; }
   list.textContent = '';
   for (const [name, ids] of [...byName].sort((a, b) => a[0].localeCompare(b[0]))) {
     const label = document.createElement('label');
     const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: true });
-    box.onchange = () => { for (const id of ids) box.checked ? hiddenScopes.delete(id) : hiddenScopes.add(id); updateVisibility(); };
+    box.dataset.scopeIds = JSON.stringify(ids);
+    box.onchange = () => { for (const id of ids) box.checked ? hiddenScopes.delete(id) : hiddenScopes.add(id); updateSelectionButtons(); updateVisibility(); };
     label.append(box, ' ', name);
     list.append(label);
   }
+  updateSelectionButtons();
 }
+
+document.getElementById('selectAllScopes').onclick = () => {
+  const boxes = [...document.querySelectorAll('#scopes input')];
+  const select = boxes.some(box => !box.checked);
+  for (const box of boxes) {
+    box.checked = select;
+    for (const id of JSON.parse(box.dataset.scopeIds)) select ? hiddenScopes.delete(id) : hiddenScopes.add(id);
+  }
+  updateSelectionButtons();
+  updateVisibility();
+};
 
 document.getElementById('opacity').oninput = e => {
   for (const mesh of planGroup.children) mesh.material.opacity = Number(e.target.value);
@@ -420,11 +442,23 @@ function buildTypeList() {
     const label = document.createElement('label');
     const box = Object.assign(document.createElement('input'), { type: 'checkbox', checked: true });
     box.dataset.type = String(type);
-    box.onchange = () => { box.checked ? hiddenTypes.delete(type) : hiddenTypes.add(type); updateVisibility(); };
+    box.onchange = () => { box.checked ? hiddenTypes.delete(type) : hiddenTypes.add(type); updateSelectionButtons(); updateVisibility(); };
     label.append(box, ` ${type} (${count})`);
     list.append(label);
   }
+  updateSelectionButtons();
 }
+
+document.getElementById('selectAllTypes').onclick = () => {
+  const boxes = [...document.querySelectorAll('#types input')];
+  const select = boxes.some(box => !box.checked);
+  for (const box of boxes) {
+    box.checked = select;
+    select ? hiddenTypes.delete(box.dataset.type) : hiddenTypes.add(box.dataset.type);
+  }
+  updateSelectionButtons();
+  updateVisibility();
+};
 
 document.getElementById('isolate').onchange = () => setSelected(selected);
 
@@ -439,12 +473,12 @@ function menuItem(text, action, cls) {
 function hideType(type) {
   hiddenTypes.add(type);
   document.querySelectorAll('#types input').forEach(box => { box.checked = !hiddenTypes.has(box.dataset.type); });
-  setSelected(null); updateVisibility();
+  updateSelectionButtons(); setSelected(null); updateVisibility();
 }
 function showAll() {
   hiddenScopes.clear(); hiddenTypes.clear(); hiddenMeshes.clear(); isolatedMesh = null;
   document.querySelectorAll('#types input, #scopes input').forEach(b => { b.checked = true; });
-  setSelected(null); updateVisibility();
+  updateSelectionButtons(); setSelected(null); updateVisibility();
 }
 
 canvas.addEventListener('contextmenu', e => {
